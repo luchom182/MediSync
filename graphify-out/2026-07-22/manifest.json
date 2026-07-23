@@ -1,0 +1,157 @@
+{
+  "client/package.json": {
+    "mtime": 1784778577.4518995,
+    "ast_hash": "bac7aaec6342e36f66bb044f3c78b1cf",
+    "semantic_hash": ""
+  },
+  "client/src/App.jsx": {
+    "mtime": 1784778613.7191086,
+    "ast_hash": "842b902c1ea585ef564cdf8a2bbb0cfa",
+    "semantic_hash": ""
+  },
+  "client/src/components/AppointmentCard.jsx": {
+    "mtime": 1784778594.3711355,
+    "ast_hash": "e7fbe3c10a57f57922a687d582137ca7",
+    "semantic_hash": ""
+  },
+  "client/src/components/AppointmentDetailModal.jsx": {
+    "mtime": 1784778604.4138007,
+    "ast_hash": "e52bb9d8fbcf0731475d82d5ec1cf72e",
+    "semantic_hash": ""
+  },
+  "client/src/components/CreateAppointmentModal.jsx": {
+    "mtime": 1784778600.3688953,
+    "ast_hash": "d1bfbe4e9b2c2ed698ce2c84c84b5490",
+    "semantic_hash": ""
+  },
+  "client/src/components/DocumentChecklist.jsx": {
+    "mtime": 1784778597.1504836,
+    "ast_hash": "ea14612c8a07f4b396b48b0367b74e74",
+    "semantic_hash": ""
+  },
+  "client/src/components/Navbar.jsx": {
+    "mtime": 1784778591.7142954,
+    "ast_hash": "b1680bdb9298df6c302d93efaf8c1cd4",
+    "semantic_hash": ""
+  },
+  "client/src/context/AuthContext.jsx": {
+    "mtime": 1784778589.388863,
+    "ast_hash": "b5e2c3fe64545403dd5e19f6e418e7d1",
+    "semantic_hash": ""
+  },
+  "client/src/main.jsx": {
+    "mtime": 1784778615.3842864,
+    "ast_hash": "ec05c83d9bfed70d888b2da13f269eef",
+    "semantic_hash": ""
+  },
+  "client/src/pages/AuthPage.jsx": {
+    "mtime": 1784778608.0547779,
+    "ast_hash": "871efd1496e58dbe9560459f074e81c9",
+    "semantic_hash": ""
+  },
+  "client/src/pages/DashboardPage.jsx": {
+    "mtime": 1784778611.8464456,
+    "ast_hash": "26ddc5b3965927a9f4595fbda1a540c3",
+    "semantic_hash": ""
+  },
+  "client/src/services/api.js": {
+    "mtime": 1784778587.3665924,
+    "ast_hash": "b4704b8dfc8a47ff3a1671bd68e14ce0",
+    "semantic_hash": ""
+  },
+  "client/vite.config.js": {
+    "mtime": 1784778579.2410657,
+    "ast_hash": "6a0b19dc93c2fd32c5dd1273d83c3ed4",
+    "semantic_hash": ""
+  },
+  "server/package.json": {
+    "mtime": 1784778533.5825598,
+    "ast_hash": "08de101609e4f751a7f503ce6a5a7a24",
+    "semantic_hash": ""
+  },
+  "server/src/app.js": {
+    "mtime": 1784778857.3857992,
+    "ast_hash": "0771337048886be064a7aaa03fcf8951",
+    "semantic_hash": ""
+  },
+  "server/src/config/database.js": {
+    "mtime": 1784778535.5145183,
+    "ast_hash": "5089569d306596656748be7f17bdafbe",
+    "semantic_hash": ""
+  },
+  "server/src/controllers/authController.js": {
+    "mtime": 1784778540.8630445,
+    "ast_hash": "7dfe841e0a7b9fe2638ad39e516d0508",
+    "semantic_hash": ""
+  },
+  "server/src/controllers/citasController.js": {
+    "mtime": 1784778544.242429,
+    "ast_hash": "9c0df1df9b78ec847552969e515cf23e",
+    "semantic_hash": ""
+  },
+  "server/src/controllers/documentosController.js": {
+    "mtime": 1784778546.3244483,
+    "ast_hash": "ca15de92a3ca41fbd53217a3dc26e8c9",
+    "semantic_hash": ""
+  },
+  "server/src/controllers/usersController.js": {
+    "mtime": 1784778547.9469297,
+    "ast_hash": "762c294bfc637f5c4d4043fb2342279c",
+    "semantic_hash": ""
+  },
+  "server/src/middlewares/authMiddleware.js": {
+    "mtime": 1784778537.029952,
+    "ast_hash": "e721f11a8a1e5e0f7d0a1649bde3a4fc",
+    "semantic_hash": ""
+  },
+  "server/src/middlewares/errorMiddleware.js": {
+    "mtime": 1784778538.7004702,
+    "ast_hash": "0988cba0f4ce60b505c5963b3cc066d3",
+    "semantic_hash": ""
+  },
+  "server/src/routes/authRoutes.js": {
+    "mtime": 1784778549.8006308,
+    "ast_hash": "6798ad0a58049fd3d9a5bc228ec11f91",
+    "semantic_hash": ""
+  },
+  "server/src/routes/citasRoutes.js": {
+    "mtime": 1784778552.0604398,
+    "ast_hash": "b9bf366fc9fdd8913405904f3689c15d",
+    "semantic_hash": ""
+  },
+  "server/src/routes/documentosRoutes.js": {
+    "mtime": 1784778553.4666812,
+    "ast_hash": "6c94b441a307e1eb1ad54fdbaaed58d7",
+    "semantic_hash": ""
+  },
+  "server/src/routes/usersRoutes.js": {
+    "mtime": 1784778555.1303422,
+    "ast_hash": "557c1b0f1b2b705aa0db1c376dbea5b6",
+    "semantic_hash": ""
+  },
+  "server/test-api.js": {
+    "mtime": 1784778632.7721066,
+    "ast_hash": "37e0dc7745fd1aa66a720b6d46bee6ab",
+    "semantic_hash": ""
+  },
+  ".agents/rules/graphify.md": {
+    "mtime": 1784778529.213049,
+    "ast_hash": "a0e4d192b9e2e17256124dbfc8e24e6a",
+    "semantic_hash": ""
+  },
+  ".agents/workflows/graphify.md": {
+    "mtime": 1784778529.2140484,
+    "ast_hash": "637776aa6f7496d069afe7520c845c8a",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1784778637.6791103,
+    "ast_hash": "e7b5c28178b4f0b276e26ec5618ab3ff",
+    "semantic_hash": ""
+  },
+  "client/index.html": {
+    "mtime": 1784778580.950061,
+    "ast_hash": "87b8d24125cbadcc2bb26bc685f77967",
+    "semantic_hash": ""
+  }
+}

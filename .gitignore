@@ -1,0 +1,34 @@
+# Node & NPM dependencies
+node_modules/
+server/node_modules/
+client/node_modules/
+client/dist/
+
+# Environment variables
+.env
+*.env.local
+
+# SQLite Database & Storage
+*.sqlite
+*.sqlite-journal
+server/database.sqlite
+
+# Logs & System
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Build outputs
+dist/
+build/

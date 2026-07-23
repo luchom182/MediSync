@@ -1,0 +1,19 @@
+{
+  "0": "DashboardPage.jsx",
+  "1": "get",
+  "2": "dependencies",
+  "3": "client/package.json",
+  "4": "authController.js",
+  "5": "backend:routes:api",
+  "6": "app.js",
+  "7": "🏥 CitaMed & Docs Checklist - Plataforma de Gestión de Citas Médicas",
+  "8": "usersRoutes.js",
+  "9": "test-api.js",
+  "10": "rules/graphify.md",
+  "11": "workflows/graphify.md",
+  "12": "frontend:app",
+  "13": "frontend:component:appointment-card",
+  "14": "architect:system-spec",
+  "15": "backend:controller:services",
+  "16": "vite.config.js"
+}
