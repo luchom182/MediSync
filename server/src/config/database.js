@@ -4,7 +4,7 @@ const path = require('path');
 const dbPath = path.resolve(__dirname, '../../database.sqlite');
 const db = new sqlite3.Database(dbPath);
 
-// Enforce Foreign Keys & create tables
+// Enforce Foreign Keys & create/migrate tables
 db.serialize(() => {
   db.run('PRAGMA foreign_keys = ON;');
 
@@ -16,9 +16,15 @@ db.serialize(() => {
       email TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
       rol TEXT NOT NULL DEFAULT 'paciente',
+      google_id TEXT,
+      avatar_url TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `);
+
+  // Migraciones de columnas seguras para bases de datos existentes
+  db.run('ALTER TABLE users ADD COLUMN google_id TEXT;', (err) => {});
+  db.run('ALTER TABLE users ADD COLUMN avatar_url TEXT;', (err) => {});
 
   // Tabla CITAS
   db.run(`
@@ -33,10 +39,13 @@ db.serialize(() => {
       lugar TEXT NOT NULL,
       estado TEXT CHECK(estado IN ('Pendiente', 'Completada', 'Cancelada')) DEFAULT 'Pendiente',
       notas TEXT,
+      google_calendar_event_id TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
   `);
+
+  db.run('ALTER TABLE citas ADD COLUMN google_calendar_event_id TEXT;', (err) => {});
 
   // Tabla DOCUMENTOS (Checklist por Cita)
   db.run(`
@@ -52,7 +61,7 @@ db.serialize(() => {
   `);
 });
 
-// Async Database Helper
+// Async Database Helpers
 const query = (sql, params = []) => {
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {

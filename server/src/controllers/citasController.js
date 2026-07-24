@@ -1,6 +1,7 @@
 const { query, get, run } = require('../config/database');
+const { generateGoogleCalendarUrl, syncToGoogleCalendarAPI } = require('../services/calendarService');
 
-// Obtener todas las citas del usuario con filtros opcionales y resumen de documentos
+// Obtener todas las citas del usuario con filtros opcionales, resumen de documentos y URL de Google Calendar
 const getCitas = async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -30,7 +31,13 @@ const getCitas = async (req, res, next) => {
 
     sql += ' GROUP BY c.id ORDER BY c.fecha ASC, c.hora ASC';
 
-    const citas = await query(sql, params);
+    const rawCitas = await query(sql, params);
+
+    // Enriquecer cada cita con su enlace directo a Google Calendar
+    const citas = rawCitas.map(c => ({
+      ...c,
+      google_calendar_url: generateGoogleCalendarUrl(c)
+    }));
 
     res.json({
       success: true,
@@ -42,7 +49,7 @@ const getCitas = async (req, res, next) => {
   }
 };
 
-// Detalle de una cita específica con su lista completa de documentos
+// Detalle de una cita específica con su lista completa de documentos y URL de Google Calendar
 const getCitaById = async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -59,6 +66,7 @@ const getCitaById = async (req, res, next) => {
       success: true,
       cita: {
         ...cita,
+        google_calendar_url: generateGoogleCalendarUrl(cita),
         documentos
       }
     });
@@ -67,11 +75,11 @@ const getCitaById = async (req, res, next) => {
   }
 };
 
-// Crear nueva cita y generar checklist inicial de documentos
+// Crear nueva cita y generar checklist inicial de documentos + Google Calendar Event Sync
 const createCita = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const { titulo, especialidad, doctor, fecha, hora, lugar, notas, documentos } = req.body;
+    const { titulo, especialidad, doctor, fecha, hora, lugar, notas, documentos, googleAccessToken } = req.body;
 
     if (!titulo || !especialidad || !doctor || !fecha || !hora || !lugar) {
       return res.status(400).json({
@@ -80,10 +88,19 @@ const createCita = async (req, res, next) => {
       });
     }
 
+    // Si se proporciona un Access Token de Google, intentar sincronización directa con Calendar API
+    let google_calendar_event_id = null;
+    if (googleAccessToken) {
+      google_calendar_event_id = await syncToGoogleCalendarAPI(
+        { titulo, especialidad, doctor, fecha, hora, lugar, notas },
+        googleAccessToken
+      );
+    }
+
     const result = await run(
-      `INSERT INTO citas (user_id, titulo, especialidad, doctor, fecha, hora, lugar, estado, notas)
-       VALUES (?, ?, ?, ?, ?, ?, ?, 'Pendiente', ?)`,
-      [userId, titulo, especialidad, doctor, fecha, hora, lugar, notas || '']
+      `INSERT INTO citas (user_id, titulo, especialidad, doctor, fecha, hora, lugar, estado, notas, google_calendar_event_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'Pendiente', ?, ?)`,
+      [userId, titulo, especialidad, doctor, fecha, hora, lugar, notas || '', google_calendar_event_id]
     );
 
     const citaId = result.lastID;
@@ -110,9 +127,10 @@ const createCita = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      message: 'Cita creada exitosamente con lista de chequeo de documentos.',
+      message: 'Cita creada exitosamente con lista de chequeo y sincronización de calendario.',
       cita: {
         ...createdCita,
+        google_calendar_url: generateGoogleCalendarUrl(createdCita),
         documentos: createdDocs
       }
     });
@@ -121,7 +139,7 @@ const createCita = async (req, res, next) => {
   }
 };
 
-// Actualizar cita o estado (Pendiente, Completada, Cancelada)
+// Actualizar cita o estado
 const updateCita = async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -161,6 +179,7 @@ const updateCita = async (req, res, next) => {
       message: 'Cita actualizada correctamente.',
       cita: {
         ...updatedCita,
+        google_calendar_url: generateGoogleCalendarUrl(updatedCita),
         documentos
       }
     });

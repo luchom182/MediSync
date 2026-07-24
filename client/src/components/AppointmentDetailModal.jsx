@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, Clock, MapPin, User, Trash2, Edit3 } from 'lucide-react';
+import { X, Calendar, Clock, MapPin, User, Trash2, CalendarPlus } from 'lucide-react';
 import { DocumentChecklist } from './DocumentChecklist';
 import { api } from '../services/api';
 
@@ -49,6 +49,12 @@ export const AppointmentDetailModal = ({ citaId, isOpen, onClose, onUpdate }) =>
       onClose();
     } catch (err) {
       alert(err.message || 'Error al eliminar cita.');
+    }
+  };
+
+  const handleOpenGoogleCalendar = () => {
+    if (citaDetail && citaDetail.google_calendar_url) {
+      window.open(citaDetail.google_calendar_url, '_blank');
     }
   };
 
@@ -136,6 +142,32 @@ export const AppointmentDetailModal = ({ citaId, isOpen, onClose, onUpdate }) =>
                 </div>
               )}
             </div>
+
+            {/* Botón de Sincronización Directa a Google Calendar */}
+            <button
+              type="button"
+              onClick={handleOpenGoogleCalendar}
+              style={{
+                width: '100%',
+                background: 'linear-gradient(135deg, #4285F4, #1a73e8)',
+                color: '#ffffff',
+                fontWeight: 700,
+                fontSize: '0.88rem',
+                border: 'none',
+                borderRadius: 'var(--radius-md)',
+                padding: '10px 14px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                marginBottom: '16px',
+                boxShadow: '0 4px 12px rgba(66, 133, 244, 0.3)'
+              }}
+            >
+              <CalendarPlus size={18} />
+              <span>Guardar Recordatorio en Google Calendar</span>
+            </button>
 
             {/* Document Checklist Component */}
             <DocumentChecklist

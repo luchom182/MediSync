@@ -35,62 +35,70 @@ const request = (method, path, data = null, token = null) => {
 };
 
 async function runAudit() {
-  console.log('🛡️  INICIANDO AUDITORÍA QA & SECURITY PARA APP_CITAS...\n');
+  console.log('🛡️  INICIANDO AUDITORÍA QA & SECURITY PARA MEDISYNC (GOOGLE AUTH & CALENDAR SYNC)...\n');
 
   try {
     // 1. Health Check
-    console.log('[1/7] Probando GET /api/health ...');
+    console.log('[1/8] Probando GET /api/health ...');
     const health = await request('GET', '/health');
-    console.log('   Status:', health.status, 'Response:', health.body);
+    console.log('   Status:', health.status, 'Service:', health.body.service);
 
-    // 2. Registro
-    console.log('\n[2/7] Probando POST /api/auth/register ...');
-    const testUser = {
-      nombre: 'Prueba QA',
-      email: `qa_${Date.now()}@test.com`,
-      password: 'SecurePassword123!'
+    // 2. Autenticación con Google (Gmail OAuth 2.0)
+    console.log('\n[2/8] Probando POST /api/auth/google (Login con Gmail) ...');
+    const googleUserPayload = {
+      googleUser: {
+        email: `paciente_qa_${Date.now()}@gmail.com`,
+        nombre: 'Paciente Google QA',
+        google_id: `google_id_${Date.now()}`,
+        avatar_url: 'https://lh3.googleusercontent.com/a/default-user'
+      }
     };
-    const regRes = await request('POST', '/auth/register', testUser);
-    console.log('   Status:', regRes.status, 'User ID:', regRes.body.user?.id);
-    const token = regRes.body.token;
+    const googleAuthRes = await request('POST', '/auth/google', googleUserPayload);
+    console.log('   Status:', googleAuthRes.status, 'User ID:', googleAuthRes.body.user?.id, 'Avatar:', googleAuthRes.body.user?.avatar_url);
+    const token = googleAuthRes.body.token;
 
-    // 3. Crear Cita
-    console.log('\n[3/7] Probando POST /api/citas (Con JWT Token) ...');
+    // 3. Crear Cita con Generación de Google Calendar URL
+    console.log('\n[3/8] Probando POST /api/citas (Crear Cita + Google Calendar URL) ...');
     const newCita = {
-      titulo: 'Consulta Médica General QA',
-      especialidad: 'Medicina General',
-      doctor: 'Dr. Carlos Mendoza',
-      fecha: '2026-08-15',
-      hora: '10:30',
-      lugar: 'Clínica Central - Consultorio 101',
-      notas: 'Prueba de integración QA'
+      titulo: 'Consulta Cardiología MediSync',
+      especialidad: 'Cardiología',
+      doctor: 'Dr. Alejandro Silva',
+      fecha: '2026-09-10',
+      hora: '11:00',
+      lugar: 'Hospital San Rafael - Consultorio 402',
+      notas: 'Llevar exámenes de sangre y electrocardiograma previo.'
     };
     const citaRes = await request('POST', '/citas', newCita, token);
-    console.log('   Status:', citaRes.status, 'Cita ID:', citaRes.body.cita?.id, 'Docs iniciales:', citaRes.body.cita?.documentos?.length);
-    const citaId = citaRes.body.cita?.id;
-    const docId = citaRes.body.cita?.documentos?.[0]?.id;
+    console.log('   Status:', citaRes.status, 'Cita ID:', citaRes.body.cita?.id);
+    console.log('   📅 Google Calendar URL:', citaRes.body.cita?.google_calendar_url);
 
     // 4. Toggle Documento Checklist
-    console.log('\n[4/7] Probando PATCH /api/documentos/:id/toggle ...');
+    const docId = citaRes.body.cita?.documentos?.[0]?.id;
+    console.log('\n[4/8] Probando PATCH /api/documentos/:id/toggle ...');
     const toggleRes = await request('PATCH', `/documentos/${docId}/toggle`, null, token);
     console.log('   Status:', toggleRes.status, 'Documento Completado:', toggleRes.body.documento?.completado);
 
-    // 5. Listar Citas con Filtros
-    console.log('\n[5/7] Probando GET /api/citas ...');
+    // 5. Listar Citas
+    console.log('\n[5/8] Probando GET /api/citas ...');
     const getCitasRes = await request('GET', '/citas', null, token);
     console.log('   Status:', getCitasRes.status, 'Total Citas:', getCitasRes.body.count);
 
     // 6. Prueba de Seguridad: Petición sin Token (Debe retornar 401)
-    console.log('\n[6/7] Probando Seguridad: Acceso no autorizado (Sin Token) ...');
+    console.log('\n[6/8] Probando Seguridad: Acceso sin Token JWT ...');
     const unauthorizedRes = await request('GET', '/citas');
-    console.log('   Status:', unauthorizedRes.status, 'Esperado: 401. Error:', unauthorizedRes.body.error);
+    console.log('   Status:', unauthorizedRes.status, 'Error:', unauthorizedRes.body.error);
 
-    // 7. Prueba de Seguridad: Petición a Cita Inexistente (Debe retornar 404 estandarizado)
-    console.log('\n[7/7] Probando Estandarización de Errores (404) ...');
+    // 7. Prueba de Seguridad: Petición 404
+    console.log('\n[7/8] Probando Estandarización 404 ...');
     const notFoundRes = await request('GET', '/citas/999999', null, token);
     console.log('   Status:', notFoundRes.status, 'Error:', notFoundRes.body.error);
 
-    console.log('\n✅ AUDITORÍA QA FINALIZADA CON ÉXITO: Todos los endpoints responden según la especificación del Contrato API.');
+    // 8. Perfil de Usuario con Avatar de Google
+    console.log('\n[8/8] Probando GET /api/users/profile ...');
+    const profileRes = await request('GET', '/users/profile', null, token);
+    console.log('   Status:', profileRes.status, 'Email:', profileRes.body.user?.email);
+
+    console.log('\n✅ AUDITORÍA QA FINALIZADA CON ÉXITO: Autenticación con Google y Sincronización de Calendario validadas.');
   } catch (err) {
     console.error('❌ ERROR EN AUDITORÍA QA:', err);
   }

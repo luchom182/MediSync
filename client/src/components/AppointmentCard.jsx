@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Clock, MapPin, UserCheck, FileCheck } from 'lucide-react';
+import { Calendar, Clock, MapPin, UserCheck, FileCheck, CalendarPlus } from 'lucide-react';
 
 export const AppointmentCard = ({ cita, onClick }) => {
   const totalDocs = cita.total_documentos || 0;
@@ -11,6 +11,13 @@ export const AppointmentCard = ({ cita, onClick }) => {
       case 'Completada': return 'badge-completada';
       case 'Cancelada': return 'badge-cancelada';
       default: return 'badge-pendiente';
+    }
+  };
+
+  const handleOpenGoogleCalendar = (e) => {
+    e.stopPropagation();
+    if (cita.google_calendar_url) {
+      window.open(cita.google_calendar_url, '_blank');
     }
   };
 
@@ -34,7 +41,7 @@ export const AppointmentCard = ({ cita, onClick }) => {
         </span>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '14px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <UserCheck size={15} color="var(--primary)" />
           <span>Dr. {cita.doctor}</span>
@@ -55,6 +62,33 @@ export const AppointmentCard = ({ cita, onClick }) => {
             {cita.lugar}
           </span>
         </div>
+      </div>
+
+      {/* Botón rápido de Google Calendar Sync */}
+      <div style={{ marginBottom: '10px' }}>
+        <button
+          type="button"
+          onClick={handleOpenGoogleCalendar}
+          style={{
+            width: '100%',
+            background: 'rgba(66, 133, 244, 0.15)',
+            border: '1px solid rgba(66, 133, 244, 0.3)',
+            color: '#60a5fa',
+            borderRadius: 'var(--radius-sm)',
+            padding: '6px 10px',
+            fontSize: '0.78rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            transition: 'all 0.2s ease'
+          }}
+        >
+          <CalendarPlus size={14} />
+          <span>Recordatorio en Google Calendar</span>
+        </button>
       </div>
 
       {/* Progress Bar for Documents Checklist */}

@@ -10,13 +10,13 @@
     "semantic_hash": ""
   },
   "client/src/components/AppointmentCard.jsx": {
-    "mtime": 1784861480.1453035,
-    "ast_hash": "d9a33c57511d1bb778b88db9d307d6c8",
+    "mtime": 1784778594.3711355,
+    "ast_hash": "e7fbe3c10a57f57922a687d582137ca7",
     "semantic_hash": ""
   },
   "client/src/components/AppointmentDetailModal.jsx": {
-    "mtime": 1784861484.4809165,
-    "ast_hash": "bd76acc7188ebd1a37f4f9e71836fb51",
+    "mtime": 1784778604.4138007,
+    "ast_hash": "e52bb9d8fbcf0731475d82d5ec1cf72e",
     "semantic_hash": ""
   },
   "client/src/components/CreateAppointmentModal.jsx": {
@@ -35,8 +35,8 @@
     "semantic_hash": ""
   },
   "client/src/context/AuthContext.jsx": {
-    "mtime": 1784861463.6675725,
-    "ast_hash": "e2d5bc3e4ae142fc433a59f98245b5a2",
+    "mtime": 1784778589.388863,
+    "ast_hash": "b5e2c3fe64545403dd5e19f6e418e7d1",
     "semantic_hash": ""
   },
   "client/src/main.jsx": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "client/src/pages/AuthPage.jsx": {
-    "mtime": 1784861469.1791785,
-    "ast_hash": "98e083c805262afe1eb56202cf282e4b",
+    "mtime": 1784779228.9066463,
+    "ast_hash": "df9428fd278d49339557c1e1268688d9",
     "semantic_hash": ""
   },
   "client/src/pages/DashboardPage.jsx": {
@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "server/package.json": {
-    "mtime": 1784861453.5313382,
-    "ast_hash": "c5d8319b15300864212e6221ccf20c7f",
+    "mtime": 1784778533.5825598,
+    "ast_hash": "08de101609e4f751a7f503ce6a5a7a24",
     "semantic_hash": ""
   },
   "server/src/app.js": {
@@ -75,18 +75,18 @@
     "semantic_hash": ""
   },
   "server/src/config/database.js": {
-    "mtime": 1784861513.8345277,
-    "ast_hash": "5ce9758edc1968918f3acc0ee1b36966",
+    "mtime": 1784778535.5145183,
+    "ast_hash": "5089569d306596656748be7f17bdafbe",
     "semantic_hash": ""
   },
   "server/src/controllers/authController.js": {
-    "mtime": 1784861454.4015336,
-    "ast_hash": "0a1845d6de432de63c5c786458e57ebc",
+    "mtime": 1784778540.8630445,
+    "ast_hash": "7dfe841e0a7b9fe2638ad39e516d0508",
     "semantic_hash": ""
   },
   "server/src/controllers/citasController.js": {
-    "mtime": 1784861460.5559633,
-    "ast_hash": "cd7c0e353a7a290e667a6679a797658d",
+    "mtime": 1784778544.242429,
+    "ast_hash": "9c0df1df9b78ec847552969e515cf23e",
     "semantic_hash": ""
   },
   "server/src/controllers/documentosController.js": {
@@ -110,8 +110,8 @@
     "semantic_hash": ""
   },
   "server/src/routes/authRoutes.js": {
-    "mtime": 1784861456.1279752,
-    "ast_hash": "67056b4b68f4b0b2782e34b9c7a0d9a2",
+    "mtime": 1784778549.8006308,
+    "ast_hash": "6798ad0a58049fd3d9a5bc228ec11f91",
     "semantic_hash": ""
   },
   "server/src/routes/citasRoutes.js": {
@@ -130,8 +130,8 @@
     "semantic_hash": ""
   },
   "server/test-api.js": {
-    "mtime": 1784861488.153438,
-    "ast_hash": "360c72462ee0c75f05bbd8e70e8f83c1",
+    "mtime": 1784778632.7721066,
+    "ast_hash": "37e0dc7745fd1aa66a720b6d46bee6ab",
     "semantic_hash": ""
   },
   ".agents/rules/graphify.md": {
@@ -207,11 +207,6 @@
   "docs/DESPLIEGUE_Y_ARCHIVOS.md": {
     "mtime": 1784861305.3220713,
     "ast_hash": "1d06ef67d96614266d9fd520069de7e5",
-    "semantic_hash": ""
-  },
-  "server/src/services/calendarService.js": {
-    "mtime": 1784861451.1643248,
-    "ast_hash": "91ed05239cb1a30ac3ed503fb488cdf1",
     "semantic_hash": ""
   }
 }
