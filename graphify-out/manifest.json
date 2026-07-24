@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "client/src/pages/AuthPage.jsx": {
-    "mtime": 1784861469.1791785,
-    "ast_hash": "98e083c805262afe1eb56202cf282e4b",
+    "mtime": 1784861801.7958846,
+    "ast_hash": "f9c6db5f43ad52bbc91f94209ec7951e",
     "semantic_hash": ""
   },
   "client/src/pages/DashboardPage.jsx": {
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "client/index.html": {
-    "mtime": 1784779222.251385,
-    "ast_hash": "ecc0ded171190f9a1a68de37c6d1710a",
+    "mtime": 1784861795.306875,
+    "ast_hash": "45fa3c4eab4d65c159455ceaf6668f77",
     "semantic_hash": ""
   },
   ".agents/rules/claude_agents.md": {
