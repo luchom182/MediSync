@@ -1,0 +1,14 @@
+{
+  "subagent": "Error-Memory",
+  "project": "MediSync",
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "title": "Selección de Stack Gratuito de Producción y Carga de Archivos (Fotos/PDFs)",
+      "description": "Se definió la arquitectura para alojamiento gratuito: Frontend en Vercel, Backend en Render, Base de Datos SQLite en la Nube con Turso, y Almacenamiento de Fotos y PDFs con Cloudinary (25GB gratis).",
+      "modules_affected": ["server", "client", "documentosController", "DocumentChecklist"],
+      "date": "2026-07-23",
+      "status": "planned"
+    }
+  ]
+}
