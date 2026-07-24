@@ -1,8 +1,8 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Calendar, LogOut, PlusCircle, User } from 'lucide-react';
+import { Calendar, LogOut, PlusCircle, Users } from 'lucide-react';
 
-export const Navbar = ({ onOpenCreateModal }) => {
+export const Navbar = ({ onOpenCreateModal, onOpenFamilyManager }) => {
   const { user, logout } = useAuth();
 
   return (
@@ -39,7 +39,17 @@ export const Navbar = ({ onOpenCreateModal }) => {
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <button
+          onClick={onOpenFamilyManager}
+          className="btn-secondary"
+          style={{ padding: '8px 12px', fontSize: '0.82rem', borderColor: 'var(--border-accent)', background: 'rgba(99, 102, 241, 0.15)', color: '#818cf8' }}
+          title="Núcleo Familiar"
+        >
+          <Users size={16} />
+          <span>Mi Familia</span>
+        </button>
+
         <button
           onClick={onOpenCreateModal}
           className="btn-primary"
@@ -47,7 +57,7 @@ export const Navbar = ({ onOpenCreateModal }) => {
           title="Nueva Cita"
         >
           <PlusCircle size={16} />
-          <span style={{ display: 'none', minWidth: '0px' }} className="mobile-hide">Agendar</span>
+          <span>Agendar</span>
         </button>
 
         <button

@@ -22,15 +22,29 @@ db.serialize(() => {
     );
   `);
 
-  // Migraciones de columnas seguras para bases de datos existentes
-  db.run('ALTER TABLE users ADD COLUMN google_id TEXT;', (err) => {});
-  db.run('ALTER TABLE users ADD COLUMN avatar_url TEXT;', (err) => {});
+  db.run('ALTER TABLE users ADD COLUMN google_id TEXT;', () => {});
+  db.run('ALTER TABLE users ADD COLUMN avatar_url TEXT;', () => {});
 
-  // Tabla CITAS
+  // Tabla FAMILIARES (Núcleo Familiar para Cabeza de Hogar)
+  db.run(`
+    CREATE TABLE IF NOT EXISTS familiares (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      nombre TEXT NOT NULL,
+      parentesco TEXT NOT NULL,
+      documento_identidad TEXT,
+      color_tag TEXT DEFAULT '#6366f1',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+  `);
+
+  // Tabla CITAS (Vinculada a Usuario y opcionalmente a Familiar)
   db.run(`
     CREATE TABLE IF NOT EXISTS citas (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
+      familiar_id INTEGER,
       titulo TEXT NOT NULL,
       especialidad TEXT NOT NULL,
       doctor TEXT NOT NULL,
@@ -41,11 +55,13 @@ db.serialize(() => {
       notas TEXT,
       google_calendar_event_id TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (familiar_id) REFERENCES familiares(id) ON DELETE SET NULL
     );
   `);
 
-  db.run('ALTER TABLE citas ADD COLUMN google_calendar_event_id TEXT;', (err) => {});
+  db.run('ALTER TABLE citas ADD COLUMN familiar_id INTEGER;', () => {});
+  db.run('ALTER TABLE citas ADD COLUMN google_calendar_event_id TEXT;', () => {});
 
   // Tabla DOCUMENTOS (Checklist por Cita)
   db.run(`

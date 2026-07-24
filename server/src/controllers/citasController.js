@@ -1,18 +1,22 @@
 const { query, get, run } = require('../config/database');
 const { generateGoogleCalendarUrl, syncToGoogleCalendarAPI } = require('../services/calendarService');
 
-// Obtener todas las citas del usuario con filtros opcionales, resumen de documentos y URL de Google Calendar
+// Obtener todas las citas del usuario con información del familiar asociado y resumen de documentos
 const getCitas = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const { estado, especialidad } = req.query;
+    const { estado, especialidad, familiar_id } = req.query;
 
     let sql = `
       SELECT 
         c.*,
+        f.nombre AS familiar_nombre,
+        f.parentesco AS familiar_parentesco,
+        f.color_tag AS familiar_color,
         COUNT(d.id) AS total_documentos,
         SUM(CASE WHEN d.completado = 1 THEN 1 ELSE 0 END) AS documentos_completados
       FROM citas c
+      LEFT JOIN familiares f ON c.familiar_id = f.id
       LEFT JOIN documentos d ON c.id = d.cita_id
       WHERE c.user_id = ?
     `;
@@ -27,6 +31,15 @@ const getCitas = async (req, res, next) => {
     if (especialidad) {
       sql += ' AND c.especialidad LIKE ?';
       params.push(`%${especialidad}%`);
+    }
+
+    if (familiar_id) {
+      if (familiar_id === 'titular') {
+        sql += ' AND c.familiar_id IS NULL';
+      } else {
+        sql += ' AND c.familiar_id = ?';
+        params.push(familiar_id);
+      }
     }
 
     sql += ' GROUP BY c.id ORDER BY c.fecha ASC, c.hora ASC';
@@ -49,13 +62,24 @@ const getCitas = async (req, res, next) => {
   }
 };
 
-// Detalle de una cita específica con su lista completa de documentos y URL de Google Calendar
+// Detalle de una cita específica con información del familiar y documentos
 const getCitaById = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const citaId = req.params.id;
 
-    const cita = await get('SELECT * FROM citas WHERE id = ? AND user_id = ?', [citaId, userId]);
+    const sql = `
+      SELECT 
+        c.*,
+        f.nombre AS familiar_nombre,
+        f.parentesco AS familiar_parentesco,
+        f.color_tag AS familiar_color
+      FROM citas c
+      LEFT JOIN familiares f ON c.familiar_id = f.id
+      WHERE c.id = ? AND c.user_id = ?
+    `;
+
+    const cita = await get(sql, [citaId, userId]);
     if (!cita) {
       return res.status(404).json({ success: false, error: 'Cita no encontrada.' });
     }
@@ -75,17 +99,24 @@ const getCitaById = async (req, res, next) => {
   }
 };
 
-// Crear nueva cita y generar checklist inicial de documentos + Google Calendar Event Sync
+// Crear nueva cita asociando opcionalmente a un miembro del núcleo familiar
 const createCita = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const { titulo, especialidad, doctor, fecha, hora, lugar, notas, documentos, googleAccessToken } = req.body;
+    const { familiar_id, titulo, especialidad, doctor, fecha, hora, lugar, notas, documentos, googleAccessToken } = req.body;
 
     if (!titulo || !especialidad || !doctor || !fecha || !hora || !lugar) {
       return res.status(400).json({
         success: false,
         error: 'Los campos (titulo, especialidad, doctor, fecha, hora, lugar) son obligatorios.'
       });
+    }
+
+    // Si se especificó un familiar, verificar que pertenezca al usuario
+    let validFamiliarId = null;
+    if (familiar_id) {
+      const fam = await get('SELECT id FROM familiares WHERE id = ? AND user_id = ?', [familiar_id, userId]);
+      if (fam) validFamiliarId = fam.id;
     }
 
     // Si se proporciona un Access Token de Google, intentar sincronización directa con Calendar API
@@ -98,9 +129,9 @@ const createCita = async (req, res, next) => {
     }
 
     const result = await run(
-      `INSERT INTO citas (user_id, titulo, especialidad, doctor, fecha, hora, lugar, estado, notas, google_calendar_event_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?, 'Pendiente', ?, ?)`,
-      [userId, titulo, especialidad, doctor, fecha, hora, lugar, notas || '', google_calendar_event_id]
+      `INSERT INTO citas (user_id, familiar_id, titulo, especialidad, doctor, fecha, hora, lugar, estado, notas, google_calendar_event_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Pendiente', ?, ?)`,
+      [userId, validFamiliarId, titulo, especialidad, doctor, fecha, hora, lugar, notas || '', google_calendar_event_id]
     );
 
     const citaId = result.lastID;
@@ -122,12 +153,16 @@ const createCita = async (req, res, next) => {
       );
     }
 
-    const createdCita = await get('SELECT * FROM citas WHERE id = ?', [citaId]);
+    const createdCita = await get(
+      `SELECT c.*, f.nombre AS familiar_nombre, f.parentesco AS familiar_parentesco, f.color_tag AS familiar_color
+       FROM citas c LEFT JOIN familiares f ON c.familiar_id = f.id WHERE c.id = ?`,
+      [citaId]
+    );
     const createdDocs = await query('SELECT * FROM documentos WHERE cita_id = ?', [citaId]);
 
     res.status(201).json({
       success: true,
-      message: 'Cita creada exitosamente con lista de chequeo y sincronización de calendario.',
+      message: 'Cita creada exitosamente con lista de chequeo.',
       cita: {
         ...createdCita,
         google_calendar_url: generateGoogleCalendarUrl(createdCita),
@@ -139,7 +174,7 @@ const createCita = async (req, res, next) => {
   }
 };
 
-// Actualizar cita o estado
+// Actualizar cita o asociar a otro familiar
 const updateCita = async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -150,7 +185,7 @@ const updateCita = async (req, res, next) => {
       return res.status(404).json({ success: false, error: 'Cita no encontrada.' });
     }
 
-    const { titulo, especialidad, doctor, fecha, hora, lugar, estado, notas } = req.body;
+    const { familiar_id, titulo, especialidad, doctor, fecha, hora, lugar, estado, notas } = req.body;
 
     const newEstado = estado || existingCita.estado;
     if (!['Pendiente', 'Completada', 'Cancelada'].includes(newEstado)) {
@@ -159,6 +194,7 @@ const updateCita = async (req, res, next) => {
 
     await run(
       `UPDATE citas SET
+        familiar_id = COALESCE(?, familiar_id),
         titulo = COALESCE(?, titulo),
         especialidad = COALESCE(?, especialidad),
         doctor = COALESCE(?, doctor),
@@ -168,10 +204,14 @@ const updateCita = async (req, res, next) => {
         estado = ?,
         notas = COALESCE(?, notas)
        WHERE id = ? AND user_id = ?`,
-      [titulo, especialidad, doctor, fecha, hora, lugar, newEstado, notas, citaId, userId]
+      [familiar_id, titulo, especialidad, doctor, fecha, hora, lugar, newEstado, notas, citaId, userId]
     );
 
-    const updatedCita = await get('SELECT * FROM citas WHERE id = ?', [citaId]);
+    const updatedCita = await get(
+      `SELECT c.*, f.nombre AS familiar_nombre, f.parentesco AS familiar_parentesco, f.color_tag AS familiar_color
+       FROM citas c LEFT JOIN familiares f ON c.familiar_id = f.id WHERE c.id = ?`,
+      [citaId]
+    );
     const documentos = await query('SELECT * FROM documentos WHERE cita_id = ?', [citaId]);
 
     res.json({

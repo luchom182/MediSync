@@ -1,16 +1,16 @@
 # Graph Report - APP_CITAS  (2026-07-23)
 
 ## Corpus Check
-- 42 files · ~14,063 words
+- 45 files · ~16,389 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 252 nodes · 328 edges · 27 communities (20 shown, 7 thin omitted)
-- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 20 edges (avg confidence: 0.5)
+- 266 nodes · 362 edges · 27 communities (20 shown, 7 thin omitted)
+- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 24 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b8ad2f01`
+- Built from commit: `4f35f145`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -43,28 +43,28 @@
 - authController.js
 
 ## God Nodes (most connected - your core abstractions)
-1. `get()` - 18 edges
-2. `run()` - 14 edges
+1. `get()` - 22 edges
+2. `run()` - 18 edges
 3. `useAuth()` - 9 edges
-4. `Persistent Agent Memory` - 8 edges
-5. `createCita()` - 7 edges
-6. `Your Core Responsibilities` - 7 edges
-7. `api` - 6 edges
-8. `query()` - 6 edges
+4. `query()` - 8 edges
+5. `Persistent Agent Memory` - 8 edges
+6. `api` - 7 edges
+7. `createCita()` - 7 edges
+8. `Your Core Responsibilities` - 7 edges
 9. `updateCita()` - 6 edges
-10. `generateGoogleCalendarUrl()` - 6 edges
+10. `verifyToken()` - 6 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `AppContent()` --calls--> `useAuth()`  [EXTRACTED]
   client/src/App.jsx → client/src/context/AuthContext.jsx
+- `getFamiliares()` --calls--> `query()`  [EXTRACTED]
+  server/src/controllers/familiaresController.js → server/src/config/database.js
 - `getMe()` --calls--> `get()`  [EXTRACTED]
   server/src/controllers/authController.js → server/src/config/database.js
 - `googleAuth()` --calls--> `get()`  [EXTRACTED]
   server/src/controllers/authController.js → server/src/config/database.js
 - `login()` --calls--> `get()`  [EXTRACTED]
   server/src/controllers/authController.js → server/src/config/database.js
-- `getProfile()` --calls--> `get()`  [EXTRACTED]
-  server/src/controllers/usersController.js → server/src/config/database.js
 
 ## Import Cycles
 - None detected.
@@ -72,12 +72,12 @@
 ## Communities (27 total, 7 thin omitted)
 
 ### Community 0 - "DashboardPage.jsx"
-Cohesion: 0.17
-Nodes (13): App(), AppContent(), AppointmentCard(), AppointmentDetailModal(), CreateAppointmentModal(), DocumentChecklist(), Navbar(), AuthContext (+5 more)
+Cohesion: 0.16
+Nodes (14): App(), AppContent(), AppointmentCard(), AppointmentDetailModal(), CreateAppointmentModal(), DocumentChecklist(), FamilyManagerModal(), Navbar() (+6 more)
 
 ### Community 1 - "get"
-Cohesion: 0.14
-Nodes (27): db, dbPath, get(), path, query(), run(), sqlite3, register() (+19 more)
+Cohesion: 0.21
+Nodes (15): query(), createCita(), { generateGoogleCalendarUrl, syncToGoogleCalendarAPI }, getCitaById(), getCitas(), { query, get, run }, updateCita(), { addDocumento } (+7 more)
 
 ### Community 2 - "dependencies"
 Cohesion: 0.08
@@ -88,16 +88,16 @@ Cohesion: 0.10
 Nodes (20): dependencies, lucide-react, react, react-dom, devDependencies, vite, @vitejs/plugin-react, name (+12 more)
 
 ### Community 4 - "authController.js"
-Cohesion: 0.14
-Nodes (14): bcrypt, { get, run }, getProfile(), updateProfile(), jwt, verifyToken(), express, router (+6 more)
+Cohesion: 0.11
+Nodes (29): db, dbPath, get(), path, run(), sqlite3, register(), deleteCita() (+21 more)
 
 ### Community 5 - "backend:routes:api"
 Cohesion: 0.13
 Nodes (16): architect:db-schema, backend:config:db, backend:controller:appointments, backend:controller:auth, backend:middleware:auth, backend:middleware:security, backend:model:appointment, backend:model:user (+8 more)
 
 ### Community 6 - "app.js"
-Cohesion: 0.15
-Nodes (10): app, authRoutes, citasRoutes, cors, documentosRoutes, dotenv, errorHandler, express (+2 more)
+Cohesion: 0.14
+Nodes (11): app, authRoutes, citasRoutes, cors, documentosRoutes, dotenv, errorHandler, express (+3 more)
 
 ### Community 7 - "🏥 CitaMed & Docs Checklist - Plataforma de Gestión de Citas Médicas"
 Cohesion: 0.20
@@ -144,28 +144,28 @@ Cohesion: 0.33
 Nodes (5): 🏛️ Arquitectura de Producción Recomendada (Tier Gratuito), 📋 Decisiones Arquitectónicas Registradas, 📸 Flujo Futuro de Carga de Archivos (Fotos & PDFs), ☁️ Guía de Despliegue Gratuito y Gestión de Archivos (Fotos & PDFs) - MediSync, 📊 Matriz de Servicios Gratuitos
 
 ### Community 26 - "authController.js"
-Cohesion: 0.17
-Nodes (13): bcrypt, client, { get, run }, getMe(), googleAuth(), jwt, { JWT_SECRET }, login() (+5 more)
+Cohesion: 0.11
+Nodes (19): bcrypt, client, { get, run }, getMe(), googleAuth(), jwt, { JWT_SECRET }, login() (+11 more)
 
 ## Knowledge Gaps
-- **126 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+121 more)
+- **132 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+127 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `get()` connect `get` to `authController.js`, `authController.js`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **Why does `run()` connect `get` to `authController.js`, `authController.js`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
+- **Why does `get()` connect `authController.js` to `get`, `authController.js`?**
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `run()` connect `authController.js` to `get`, `authController.js`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
-  _126 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `get` be split into smaller, more focused modules?**
-  _Cohesion score 0.13709677419354838 - nodes in this community are weakly interconnected._
+  _132 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.08 - nodes in this community are weakly interconnected._
 - **Should `client/package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.09523809523809523 - nodes in this community are weakly interconnected._
 - **Should `authController.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.13725490196078433 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10588235294117647 - nodes in this community are weakly interconnected._
+- **Should `backend:routes:api` be split into smaller, more focused modules?**
+  _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Clock, MapPin, UserCheck, FileCheck, CalendarPlus } from 'lucide-react';
+import { Calendar, Clock, MapPin, UserCheck, FileCheck, CalendarPlus, User } from 'lucide-react';
 
 export const AppointmentCard = ({ cita, onClick }) => {
   const totalDocs = cita.total_documentos || 0;
@@ -27,6 +27,48 @@ export const AppointmentCard = ({ cita, onClick }) => {
       onClick={() => onClick(cita)}
       style={{ cursor: 'pointer', marginBottom: '14px', position: 'relative' }}
     >
+      {/* Badge de Miembro del Núcleo Familiar */}
+      {cita.familiar_nombre ? (
+        <div style={{ marginBottom: '8px' }}>
+          <span 
+            style={{ 
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '3px 10px',
+              borderRadius: 'var(--radius-full)',
+              fontSize: '0.75rem',
+              fontWeight: 800,
+              background: `${cita.familiar_color || '#6366f1'}20`,
+              color: cita.familiar_color || '#818cf8',
+              border: `1px solid ${cita.familiar_color || '#6366f1'}40`
+            }}
+          >
+            <User size={13} />
+            <span>{cita.familiar_nombre} ({cita.familiar_parentesco})</span>
+          </span>
+        </div>
+      ) : (
+        <div style={{ marginBottom: '8px' }}>
+          <span 
+            style={{ 
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '3px 10px',
+              borderRadius: 'var(--radius-full)',
+              fontSize: '0.75rem',
+              fontWeight: 800,
+              background: 'rgba(13, 148, 136, 0.15)',
+              color: 'var(--primary-hover)',
+              border: '1px solid rgba(13, 148, 136, 0.3)'
+            }}
+          >
+            <span>👤 Cita Personal (Titular)</span>
+          </span>
+        </div>
+      )}
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
         <div>
           <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>

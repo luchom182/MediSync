@@ -9,6 +9,7 @@ const authRoutes = require('./routes/authRoutes');
 const citasRoutes = require('./routes/citasRoutes');
 const documentosRoutes = require('./routes/documentosRoutes');
 const usersRoutes = require('./routes/usersRoutes');
+const familiaresRoutes = require('./routes/familiaresRoutes');
 const errorHandler = require('./middlewares/errorMiddleware');
 
 const app = express();
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
       auth: '/api/auth',
       citas: '/api/citas',
       documentos: '/api/documentos',
+      familiares: '/api/familiares',
       users: '/api/users'
     },
     clientUrl: 'http://localhost:3000'
@@ -49,6 +51,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/citas', citasRoutes);
 app.use('/api/documentos', documentosRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/familiares', familiaresRoutes);
 
 // Manejo de rutas no encontradas (404)
 app.use((req, res, next) => {

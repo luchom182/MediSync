@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { X, Calendar, Clock, MapPin, User, Stethoscope, FileText } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Users, Plus } from 'lucide-react';
 import { api } from '../services/api';
 
-export const CreateAppointmentModal = ({ isOpen, onClose, onSuccess }) => {
+export const CreateAppointmentModal = ({ isOpen, onClose, onSuccess, onOpenFamilyManager }) => {
   const [formData, setFormData] = useState({
+    familiar_id: '',
     titulo: '',
     especialidad: 'Medicina General',
     doctor: '',
@@ -12,8 +13,20 @@ export const CreateAppointmentModal = ({ isOpen, onClose, onSuccess }) => {
     lugar: '',
     notas: ''
   });
+
+  const [familiares, setFamiliares] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      api.get('/familiares').then(res => {
+        if (res.success && res.familiares) {
+          setFamiliares(res.familiares);
+        }
+      }).catch(console.error);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -30,11 +43,17 @@ export const CreateAppointmentModal = ({ isOpen, onClose, onSuccess }) => {
     setLoading(true);
 
     try {
-      const res = await api.post('/citas', formData);
+      const payload = {
+        ...formData,
+        familiar_id: formData.familiar_id ? parseInt(formData.familiar_id) : null
+      };
+
+      const res = await api.post('/citas', payload);
       if (res.success) {
         onSuccess();
         onClose();
         setFormData({
+          familiar_id: '',
           titulo: '',
           especialidad: 'Medicina General',
           doctor: '',
@@ -68,6 +87,37 @@ export const CreateAppointmentModal = ({ isOpen, onClose, onSuccess }) => {
         )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {/* Selector de Miembro del Núcleo Familiar */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+              <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--secondary)' }}>
+                ¿Para quién es la cita? (Paciente)
+              </label>
+              <button
+                type="button"
+                onClick={() => { onClose(); onOpenFamilyManager(); }}
+                style={{ background: 'none', border: 'none', color: 'var(--primary-hover)', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+              >
+                <Plus size={14} />
+                <span>Gestionar Familiares</span>
+              </button>
+            </div>
+            <select
+              name="familiar_id"
+              value={formData.familiar_id}
+              onChange={handleChange}
+              className="input-field"
+              style={{ borderColor: 'var(--border-accent)', background: 'rgba(13, 148, 136, 0.1)' }}
+            >
+              <option value="">👤 Para mí (Titular de la cuenta)</option>
+              {familiares.map((fam) => (
+                <option key={fam.id} value={fam.id}>
+                  👥 {fam.nombre} ({fam.parentesco})
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div>
             <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
               Título / Motivo de la Consulta
